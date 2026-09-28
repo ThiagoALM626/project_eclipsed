@@ -16,6 +16,7 @@ public class Api {
 
         var app = Javalin.create(config -> {
 
+            // Rota inicial
             config.routes.get("/", ctx -> {
 
                 ctx.result(
@@ -24,6 +25,7 @@ public class Api {
 
             });
 
+            // Listar projetos
             config.routes.get(
                 "/api/projetos",
                 ctx -> {
@@ -35,6 +37,30 @@ public class Api {
                 }
             );
 
+            // Buscar por ID
+            config.routes.get(
+                "/api/projetos/{id}",
+                ctx -> {
+
+                    int id = Integer.parseInt(
+                        ctx.pathParam("id")
+                    );
+
+                    Projeto projeto =
+                        service.buscarPorId(id);
+
+                    if (projeto == null) {
+
+                        ctx.status(404);
+
+                        return;
+                    }
+
+                    ctx.json(projeto);
+                }
+            );
+
         }).start(7070);
     }
 }
+
